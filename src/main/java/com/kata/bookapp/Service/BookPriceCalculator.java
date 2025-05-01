@@ -22,10 +22,10 @@ public class BookPriceCalculator {
 
     };
 
-    public double calculatePrice(List<Book> books) {
+    public String calculatePrice(List<Book> books) {
 
         if(books == null || books.isEmpty()) {
-            return 0.0;
+            return "0.0 EUR";
         }
 
         Map<String, Long> bookCounts = books.stream()
@@ -33,11 +33,11 @@ public class BookPriceCalculator {
 
         double totalPrice = 0.0;
 
-        while( bookCounts.values().stream().anyMatch(count -> count > 0)) {
+        while(bookCounts.values().stream().anyMatch(count -> count > 0)) {
             Set<String> groupSet = bookCounts.entrySet().stream()
                     .filter(entry -> entry.getValue() > 0)
                     .map(entry -> {
-                        bookCounts.put(entry.getKey(), entry.getValue() -1);
+                        bookCounts.put(entry.getKey(), entry.getValue() - 1);
                         return entry.getKey();
                     }).collect(Collectors.toSet());
 
@@ -46,6 +46,6 @@ public class BookPriceCalculator {
             totalPrice += setSize * BOOK_PRICE * discountFactor;
         }
 
-        return totalPrice;
+        return String.valueOf(totalPrice)+ " EUR";
     }
 }

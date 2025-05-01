@@ -20,12 +20,12 @@ public class BookPriceCalculatorTest {
 
     @Test
     public void testEmptyBasket(){
-        assertEquals(0.0, calculator.calculatePrice(Collections.emptyList()));
+        assertEquals("0.0 EUR", calculator.calculatePrice(Collections.emptyList()));
     }
 
     @Test
     public void testSingleBook(){
-        assertEquals(50.0, calculator.calculatePrice(Collections.singletonList(book("Clean Code"))));
+        assertEquals("50.0 EUR", calculator.calculatePrice(Collections.singletonList(book("Clean Code"))));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class BookPriceCalculatorTest {
                 book("Clean Code"),
                 book("Clean Architecture")
         );
-        assertEquals(95.0, calculator.calculatePrice(books), 0.01);
+        assertEquals("95.0 EUR", calculator.calculatePrice(books));
 
     }
 
@@ -45,7 +45,7 @@ public class BookPriceCalculatorTest {
                 book("Clean Architecture"),
                 book("Legacy Code")
         );
-        assertEquals(135.0, calculator.calculatePrice(books), 0.01);
+        assertEquals("135.0 EUR", calculator.calculatePrice(books));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class BookPriceCalculatorTest {
                 book("Legacy Code"),
                 book("TDD by Example")
         );
-        assertEquals(160.0, calculator.calculatePrice(books), 0.01);
+        assertEquals("160.0 EUR", calculator.calculatePrice(books));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class BookPriceCalculatorTest {
                 book("TDD by Example"),
                 book("Refactoring")
         );
-        assertEquals(187.5, calculator.calculatePrice(books), 0.01);
+        assertEquals("187.5 EUR", calculator.calculatePrice(books));
     }
 
     @Test
@@ -82,7 +82,21 @@ public class BookPriceCalculatorTest {
         );
 
         double expectedPrice = (5 * 50 * 0.75) + (2 * 50 * 0.95); //5 different books(25%) & 2 diff books(5%)
-        assertEquals(expectedPrice, calculator.calculatePrice(books));
+        assertEquals(String.valueOf(expectedPrice) + " EUR", calculator.calculatePrice(books));
+    }
+
+    @Test
+    public void testMultipleCopiesOfMultipleBooks1(){
+        List<Book> books = Arrays.asList(
+                book("Clean Code"), book("Clean Code"),
+                book("Clean Architecture"),
+                book("Legacy Code"), book("Legacy Code"),
+                book("TDD by Example"),
+                book("Refactoring")
+        );
+
+        double expectedPrice = (5 * 50 * 0.75) + (2 * 50 * 0.95); //5 different books(25%) & 2 diff books(5%)
+        assertEquals(String.valueOf(expectedPrice) + " EUR", calculator.calculatePrice(books));
     }
 
 
