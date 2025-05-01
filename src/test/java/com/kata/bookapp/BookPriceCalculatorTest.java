@@ -39,6 +39,15 @@ public class BookPriceCalculatorTest {
     }
 
     @Test
+    public void testTwoSameBooks(){
+        List<Book> books = Arrays.asList(
+                book("Clean Code"),
+                book("Clean Code")
+        );
+        assertEquals("100.0 EUR", calculator.calculatePrice(books));
+    }
+
+    @Test
     public void testThreeDifferentBooks(){
         List<Book> books = Arrays.asList(
                 book("Clean Code"),

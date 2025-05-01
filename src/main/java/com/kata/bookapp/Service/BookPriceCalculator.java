@@ -34,12 +34,14 @@ public class BookPriceCalculator {
         double totalPrice = 0.0;
 
         while(bookCounts.values().stream().anyMatch(count -> count > 0)) {
-            Set<String> groupSet = bookCounts.entrySet().stream()
-                    .filter(entry -> entry.getValue() > 0)
-                    .map(entry -> {
-                        bookCounts.put(entry.getKey(), entry.getValue() - 1);
-                        return entry.getKey();
-                    }).collect(Collectors.toSet());
+            Set<String> groupSet = new HashSet<>();
+
+            for(Map.Entry<String, Long> entry : bookCounts.entrySet()) {
+                if(entry.getValue() > 0) {
+                    groupSet.add(entry.getKey());
+                    bookCounts.put(entry.getKey(), entry.getValue() - 1);
+                }
+            }
 
             int setSize = groupSet.size();
             double discountFactor = DISCOUNT_MAP.getOrDefault(setSize, 1.0);
