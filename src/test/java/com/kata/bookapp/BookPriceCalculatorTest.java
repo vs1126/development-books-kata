@@ -4,57 +4,85 @@ import com.kata.bookapp.Service.BookPriceCalculator;
 import com.kata.bookapp.dto.Book;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BookPriceCalculatorTest {
 
+    private final BookPriceCalculator calculator = new BookPriceCalculator();
+
+    private Book book(String title) {
+        return new Book(title);
+    }
+
     @Test
-    public void testBookNoDiscount(){
-        BookPriceCalculator bookPriceCalculator = new BookPriceCalculator();
-        List<Book> books = List.of(new Book("Book 1"));
-        assertEquals(50.0, bookPriceCalculator.calculatePrice(books), 0.01);
+    public void testEmptyBasket(){
+        assertEquals(0.0, calculator.calculatePrice(Collections.emptyList()));
+    }
+
+    @Test
+    public void testSingleBook(){
+        assertEquals(50.0, calculator.calculatePrice(Collections.singletonList(book("Clean Code"))));
     }
 
     @Test
     public void testTwoDifferentBooks(){
-        BookPriceCalculator bookPriceCalculator = new BookPriceCalculator();
-        List<Book> books = List.of(new Book("Book 1"), new Book("Book 2"));
-        assertEquals(95.0, bookPriceCalculator.calculatePrice(books), 0.01);
+        List<Book> books = Arrays.asList(
+                book("Clean Code"),
+                book("Clean Architecture")
+        );
+        assertEquals(95.0, calculator.calculatePrice(books), 0.01);
 
     }
 
     @Test
     public void testThreeDifferentBooks(){
-        BookPriceCalculator bookPriceCalculator = new BookPriceCalculator();
-        List<Book> books = List.of(new Book("Book 1"),
-                new Book("Book 2"),
-                new Book("Book 3"));
-        assertEquals(135.0, bookPriceCalculator.calculatePrice(books), 0.01);
+        List<Book> books = Arrays.asList(
+                book("Clean Code"),
+                book("Clean Architecture"),
+                book("Legacy Code")
+        );
+        assertEquals(135.0, calculator.calculatePrice(books), 0.01);
     }
 
     @Test
     public void testFourDifferentBooks(){
-        BookPriceCalculator bookPriceCalculator = new BookPriceCalculator();
-        List<Book> books = List.of(
-                new Book("Book 1"),
-                new Book("Book 2"),
-                new Book("Book 3"),
-                new Book("Book 4"));
-        assertEquals(160.0, bookPriceCalculator.calculatePrice(books), 0.01);
+        List<Book> books = Arrays.asList(
+                book("Clean Code"),
+                book("Clean Architecture"),
+                book("Legacy Code"),
+                book("TDD by Example")
+        );
+        assertEquals(160.0, calculator.calculatePrice(books), 0.01);
     }
 
     @Test
     public void testFiveDifferentBooks(){
-        BookPriceCalculator bookPriceCalculator = new BookPriceCalculator();
-        List<Book> books = List.of(
-                new Book("Book 1"),
-                new Book("Book 2"),
-                new Book("Book 3"),
-                new Book("Book 4"),
-                new Book("Book 5"));
-        assertEquals(187.5, bookPriceCalculator.calculatePrice(books), 0.01);
+        List<Book> books = Arrays.asList(
+                book("Clean Code"),
+                book("Clean Architecture"),
+                book("Legacy Code"),
+                book("TDD by Example"),
+                book("Refactoring")
+        );
+        assertEquals(187.5, calculator.calculatePrice(books), 0.01);
+    }
+
+    @Test
+    public void testMultipleCopiesOfMultipleBooks(){
+        List<Book> books = Arrays.asList(
+                book("Clean Code"), book("Clean Code"),
+                book("Clean Architecture"),
+                book("Legacy Code"), book("Legacy Code"),
+                book("TDD by Example"),
+                book("Refactoring")
+        );
+
+        double expectedPrice = (5 * 50 * 0.75) + (2 * 50 * 0.95); //5 different books(25%) & 2 diff books(5%)
+        assertEquals(expectedPrice, calculator.calculatePrice(books));
     }
 
 

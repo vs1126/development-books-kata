@@ -2,35 +2,49 @@ package com.kata.bookapp.Service;
 
 import com.kata.bookapp.dto.Book;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookPriceCalculator {
 
+    private static final double BOOK_PRICE = 50.0;
+
+    private static final Map<Integer, Double> DISCOUNT_MAP;
+
+    static{
+        Map<Integer, Double> map = new HashMap<>();
+        map.put(1, 1.00);
+        map.put(2, 0.95);
+        map.put(3, 0.90);
+        map.put(4, 0.80);
+        map.put(5, 0.75);
+        DISCOUNT_MAP = Collections.unmodifiableMap(map);
+
+    };
+
     public double calculatePrice(List<Book> books) {
 
-        double bookPrice = 50.0;
-
-        Set<String> uniqueBookTitles = books.stream()
-                .map(Book::getTitle)
-                .collect(Collectors.toSet());
-
-        int differentBooks = uniqueBookTitles.size();
-        int totalBooks = books.size();
-
-        double totalPrice = totalBooks * bookPrice;
-
-        if(differentBooks == 2) {
-            totalPrice *= 0.95; // 5% discount
-        } else if(differentBooks == 3) {
-            totalPrice *= 0.90; //10% discount
-        } else if(differentBooks == 4) {
-            totalPrice *= 0.80; //20% discount
-        } else if(differentBooks == 5) {
-            totalPrice *= 0.75; // 25% discount
+        if(books == null || books.isEmpty()) {
+            return 0.0;
         }
 
+        Map<String, Long> bookCounts = books.stream()
+                .collect(Collectors.groupingBy(Book::getTitle, Collectors.counting()));
+
+        double totalPrice = 0.0;
+
+        while( bookCounts.values().stream().anyMatch(count -> count > 0)) {
+            Set<String> groupSet = bookCounts.entrySet().stream()
+                    .filter(entry -> entry.getValue() > 0)
+                    .map(entry -> {
+                        bookCounts.put(entry.getKey(), entry.getValue() -1);
+                        return entry.getKey();
+                    }).collect(Collectors.toSet());
+
+            int setSize = groupSet.size();
+            double discountFactor = DISCOUNT_MAP.getOrDefault(setSize, 1.0);
+            totalPrice += setSize * BOOK_PRICE * discountFactor;
+        }
 
         return totalPrice;
     }
