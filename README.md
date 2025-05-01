@@ -35,4 +35,4 @@ If multiple copies of the same book are purchased, the system optimally group th
     ```bash
     mvn clean test
    ```
-3. You should see all 7 test cases pass successfully.
+3. You should see all 8 test cases of BookPriceCalculatorTest pass successfully.
